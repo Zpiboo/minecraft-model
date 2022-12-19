@@ -17,11 +17,13 @@ body {
 
   perspective: 1000px;
 
-  font-size: 17px;
+  font-size: 25px;
 }
 
 
 .model {
+  --x-rot: ;
+  --y-rot: ;
   /* outline: solid 5px red; */
   position: relative;
 
@@ -29,12 +31,14 @@ body {
   transform:
     rotateX(180deg)
 
-    rotateX(0)
-    rotateY(20deg)
-
+    rotateX(var(--x-rot))
+    rotateY(var(--y-rot))
+    
     translate3d(-8em, -8em, -8em);
+  
+  pointer-events: none;
 }
-.model * { position: absolute; transform-origin: 0 0; transform-style: preserve-3d; }
+.model * { pointer-events: none; position: absolute; transform-origin: 0 0; transform-style: preserve-3d; }
 
 .model > .base {
   position: absolute;
