@@ -40,14 +40,6 @@ body {
 }
 .model * { pointer-events: none; position: absolute; transform-origin: 0 0; transform-style: preserve-3d; }
 
-.model > .base {
-  position: absolute;
-  width: 16em;
-  aspect-ratio: 1;
-  background-color: #ddddee0e;
-
-  transform: rotateX(90deg);
-}
 .model > .cube {
   --x: 0;
   --y: 0;
@@ -64,17 +56,53 @@ body {
 }
 
 .model :is(.up, .down, .north, .south, .west, .east) {
-  background-image: url(./minecraft/textures/block/bedrock.png);
-  background-size: cover;
+  --texture: ;
+  /* background-color: #f700ff4b; */
+  background-image: var(--texture);
+  background-size: 100% 100%;
 }
 .model :is(.up, .down, .north, .south)   { width:  var(--width);  }
 .model :is(.north, .south, .west, .east) { height: var(--height); }
 .model :is(.up, .down)                   { height: var(--depth);  }
 .model :is(.west, .east)                 { width:  var(--depth);  }
 
-.model .up    { transform: translateY( var(--height) ) rotateX(90deg);  }
-.model .down  { transform: /* --------------------- */ rotateX(90deg);  }
-.model .north { transform: translateZ( var(--depth) )  /* --------- */; } /*
-.model .south { This is just useless haha (potato)  ------------------  } */
-.model .west  { transform: /* ----------------------*/ rotateY(-90deg); }
-.model .east  { transform: translateX( var(--width) )  rotateY(-90deg); }
+.model .up { transform: translateY( var(--height) ) rotateX(90deg);  }
+.model .down { transform: rotateX(90deg);  }
+.model .north {
+  transform:
+    rotate(180deg)
+    translate3d(
+      calc(-1 * var(--width)),
+      calc(-1 * var(--height)),
+      var(--depth)
+    );
+}
+.model .south {
+  transform:
+    rotate(180deg)
+    translate3d(
+      calc(-1 * var(--width)),
+      calc(-1 * var(--height)),
+      0
+    );
+}
+.model .east {
+  transform:
+    rotate(180deg)
+    rotateY(90deg)
+    translate3d(
+      calc(-1 * var(--depth)),
+      calc(-1 * var(--height)),
+      0
+    );
+}
+.model .west {
+  transform:
+    rotate(180deg)
+    rotateY(90deg)
+    translate3d(
+      calc(-1 * var(--depth)),
+      calc(-1 * var(--height)),
+      calc(-1 * var(--width))
+    );
+}

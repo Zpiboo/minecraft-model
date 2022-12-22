@@ -1,7 +1,13 @@
-const displayedModel = "minecraft:block/grass_block"
+const displayedModel = "test:block/oak_log"
 
-const model   = mcpath => `${mcpath.split(":").join("/models/")}.json`;
-const texture = mcpath => `${mcpath.split(":").join("/textures/")}.png`;
+const toModelPath = mcpath => {
+  if (mcpath.includes(":")) return `${mcpath.split(":").join("/models/")}.json`;
+  return `minecraft/models/${mcpath}.json`;
+};
+const toTexturePath = mcpath => {
+  if (mcpath.includes(":")) return `${mcpath.split(":").join("/textures/")}.png`;
+  return `minecraft/textures/${mcpath}.png`;
+};
 
 
 const modelElement = document.querySelector(".model");
@@ -34,19 +40,88 @@ function onDrag(evt) {
 function refreshCam() {
   modelElement.style.setProperty("--x-rot", `${camXRot}deg`);
   modelElement.style.setProperty("--y-rot", `${camYRot}deg`);
+  // console.log(`x rot: ${Math.round(camXRot)}deg\ny rot: ${Math.round(camYRot)}deg\n`);
 }
 
 // Read model
-const modelPath = model(displayedModel);
-fetch(modelPath)
-  .then(res => res.json())
-  .then(data => {
-    console.log(data)
+const modelPath = toModelPath(displayedModel);
+
+function readModel(path, textures={}) {
+  return fetch(path).then(res => res.json())
+    .then(data => {
+      let newTextures = textures;
+      if (data.textures) {
+        newTextures = {...data.textures, ...newTextures};
+        for (const [key, value] of Object.entries(newTextures)) {
+          let replacedValue = value;
+          for (const [oldKey, oldValue] of Object.entries(textures)) {
+            replacedValue = replacedValue.replace(`#${oldKey}`, oldValue);
+          }
+          newTextures[key] = replacedValue;
+        }
+      }
+
+      if (data.elements) {
+        console.log(`There is an elements array in ${path}.`);
+        return { elements: data.elements, textures: newTextures };
+      }
+      if (!data.parent) {
+        console.warn("There is nothing to display.");
+        return;
+      }
+      console.log(`Done with ${path}!`);
+      return readModel(toModelPath(data.parent), newTextures);
+    });
+}
+readModel(modelPath)
+  .then(modelOnceRead => {
+    if (!modelOnceRead) return;
+    // console.log(modelOnceRead);
+    modelOnceRead.elements.forEach(element => {
+      let readModelCube = new Cube(element, modelOnceRead.textures);
+    });
   });
 
 
 class Cube {
-  constructor(cubeObject) {
-    // todo
+  constructor(cubeObject, textures) {
+    this.element = document.createElement("div");
+    this.element.classList.add("cube");
+
+    this.element.style.setProperty("--x", `${cubeObject.from[0]}em`);
+    this.element.style.setProperty("--y", `${cubeObject.from[1]}em`);
+    this.element.style.setProperty("--z", `${cubeObject.from[2]}em`);
+    this.element.style.setProperty("--width",  `${cubeObject.to[0]-cubeObject.from[0]}em`);
+    this.element.style.setProperty("--height", `${cubeObject.to[1]-cubeObject.from[1]}em`);
+    this.element.style.setProperty("--depth",  `${cubeObject.to[2]-cubeObject.from[2]}em`);
+
+    for (const [face, {texture, uv}] of Object.entries(cubeObject.faces)) {
+      var faceElement = document.createElement("div");
+      faceElement.classList.add(face);
+
+      let texturePath = texture;
+      for (const [textureName, value] of Object.entries(textures)) {
+        // console.log(face+": "+value+", "+texturePath);
+
+        texturePath = texturePath.replace(`#${textureName}`, value);
+      }
+      texturePath = toTexturePath(texturePath);
+
+      if (uv) {
+        faceElement.style.setProperty(
+          "--texture",
+          `-moz-image-rect(url(${texturePath}), ${uv[1]*25/4}%, ${uv[2]*25/4}%, ${uv[3]*25/4}%, ${uv[0]*25/4}%)`
+        );
+      } else {
+        faceElement.style.setProperty(
+          "--texture",
+          `url(${texturePath})`
+        );
+      }
+
+      this.element.appendChild(faceElement);
+    }
+
+    modelElement.appendChild(this.element);
   }
 }
