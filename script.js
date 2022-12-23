@@ -109,6 +109,8 @@ class Cube {
       texturePath = toTexturePath(texturePath);
 
       if (uv) {
+        if (uv[0] > uv[2]) { faceElement.style.setProperty("--x-mirrored", 1); [uv[0], uv[2]]=[uv[2], uv[0]]; }
+        if (uv[1] > uv[3]) { faceElement.style.setProperty("--y-mirrored", 1); [uv[3], uv[1]]=[uv[1], uv[3]]; }
         faceElement.style.setProperty(
           "--texture",
           `-moz-image-rect(url(${texturePath}), ${uv[1]*25/4}%, ${uv[2]*25/4}%, ${uv[3]*25/4}%, ${uv[0]*25/4}%)`
