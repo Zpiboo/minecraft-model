@@ -1,4 +1,4 @@
-const displayedModel = "test:block/oak_log"
+const displayedModel = "minecraft:block/anvil"
 
 const toModelPath = mcpath => {
   if (mcpath.includes(":")) return `${mcpath.split(":").join("/models/")}.json`;
@@ -95,9 +95,10 @@ class Cube {
     this.element.style.setProperty("--height", `${cubeObject.to[1]-cubeObject.from[1]}em`);
     this.element.style.setProperty("--depth",  `${cubeObject.to[2]-cubeObject.from[2]}em`);
 
-    for (const [face, {texture, uv}] of Object.entries(cubeObject.faces)) {
+    for (const [face, {texture, uv, rotation}] of Object.entries(cubeObject.faces)) {
       var faceElement = document.createElement("div");
       faceElement.classList.add(face);
+      faceElement.classList.add("face");
 
       let texturePath = texture;
       for (const [textureName, value] of Object.entries(textures)) {
@@ -117,6 +118,17 @@ class Cube {
           "--texture",
           `url(${texturePath})`
         );
+      }
+
+      if (rotation) {
+        let smallRotation = rotation;
+        smallRotation /= 90; smallRotation = Math.round(smallRotation);
+        faceElement.style.setProperty(
+          "--rotation",
+          `${smallRotation*90}deg`
+        );
+
+        if (smallRotation%2 === 1) faceElement.classList.add("odd-rot");
       }
 
       this.element.appendChild(faceElement);
