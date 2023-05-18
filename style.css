@@ -35,8 +35,6 @@ body {
     rotateY(var(--y-rot))
     
     translate3d(-8em, -8em, -8em);
-  
-  pointer-events: none;
 }
 .model * { pointer-events: none; position: absolute; transform-origin: 0 0; transform-style: preserve-3d; }
 

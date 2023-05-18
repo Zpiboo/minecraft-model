@@ -1,4 +1,4 @@
-const displayedModel = "minecraft:block/anvil"
+const displayedModel = "minecraft:block/acacia_fence_gate_open"
 
 const toModelPath = mcpath => {
   if (mcpath.includes(":")) return `${mcpath.split(":").join("/models/")}.json`;
@@ -12,7 +12,7 @@ const toTexturePath = mcpath => {
 
 const modelElement = document.querySelector(".model");
 
-// Dragging to rotate object
+// Drag to rotate object
 const body = document.body;
 let camXRot = 340;
 let camYRot = 30;
@@ -113,7 +113,9 @@ class Cube {
         if (uv[1] > uv[3]) { faceElement.style.setProperty("--y-mirrored", 1); [uv[3], uv[1]]=[uv[1], uv[3]]; }
         faceElement.style.setProperty(
           "--texture",
-          `-moz-image-rect(url(${texturePath}), ${uv[1]*25/4}%, ${uv[2]*25/4}%, ${uv[3]*25/4}%, ${uv[0]*25/4}%)`
+          `-moz-image-rect(url(${texturePath}), ${uv[1]*100/16}%, ${uv[2]*100/16}%, ${uv[3]*100/16}%, ${uv[0]*100/16}%)`
+          // `image("${texturePath}#xywh=percent:${uv[1]*100/16},${uv[2]*100/16},${uv[3]*100/16},${uv[0]*100/16}")`
+          // Uncomment above line when image() is supported by chrome (firefox only so far)
         );
       } else {
         faceElement.style.setProperty(
