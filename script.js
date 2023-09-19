@@ -1,4 +1,4 @@
-const displayedModel = "minecraft:block/acacia_fence_gate_open"
+const displayedModel = "minecraft:block/anvil"
 
 const toModelPath = mcpath => {
   if (mcpath.includes(":")) return `${mcpath.split(":").join("/models/")}.json`;
