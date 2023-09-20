@@ -19,21 +19,51 @@ let camYRot = 30;
 refreshCam();
 body.addEventListener("mousedown",
   evt => {
-    evt.target.addEventListener("mousemove", onDrag);
+    evt.target.addEventListener("mousemove", handleMouseDrag);
     evt.target.addEventListener("mouseup",
       evt => {
-        evt.target.removeEventListener("mousemove", onDrag);
+        evt.target.removeEventListener("mousemove", handleMouseDrag);
       }
     );
 
   }
 );
-function onDrag(evt) {
-  camXRot -= evt.movementY/3;
+body.addEventListener("touchstart",
+  evt => {
+    evt.target.lastClientX = evt.changedTouches[0].clientX;
+    evt.target.lastClientY = evt.changedTouches[0].clientY
+    console.log(evt);
+    evt.target.addEventListener("touchmove", handleTouchDrag);
+    evt.target.addEventListener("touchend",
+      evt => {
+        evt.target.removeEventListener("touchmove", handleTouchDrag);
+      }
+    );
+
+  }
+);/**/
+
+function handleMouseDrag(evt) {
+  let {
+    movementX,
+    movementY
+  } = evt;
+  onDrag(movementX, movementY, 3);
+}
+function handleTouchDrag(evt) {
+  let movementX = evt.changedTouches[0].clientX - evt.target.lastClientX;
+  let movementY = evt.changedTouches[0].clientY - evt.target.lastClientY;
+  evt.target.lastClientX = evt.changedTouches[0].clientX;
+  evt.target.lastClientY = evt.changedTouches[0].clientY;
+
+  onDrag(movementX, movementY, 2);
+}
+function onDrag(mvtX, mvtY, div) {
+  camXRot -= mvtY/div;
   camXRot += 90; camXRot %= 360; camXRot -= 90;
   if (camXRot < -90) camXRot = -90; if (camXRot > 90) camXRot = 90;
 
-  camYRot -= evt.movementX/3;
+  camYRot -= mvtX/div;
   camYRot %= 360;
   refreshCam();
 }
