@@ -103,7 +103,7 @@ body {
       var(--depth)
     );
 }
-.model .east {
+.model .west {
   transform:
     rotate(180deg)
     rotateY(90deg)
@@ -113,7 +113,7 @@ body {
       0
     );
 }
-.model .west {
+.model .east {
   transform:
     rotate(180deg)
     rotateY(-90deg)
