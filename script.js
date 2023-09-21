@@ -1,4 +1,4 @@
-const displayedModel = "minecraft:block/anvil"
+const displayedModel = "minecraft:block/anvil";
 
 const toModelPath = mcpath => {
   if (mcpath.includes(":")) return `${mcpath.split(":").join("/models/")}.json`;
@@ -31,8 +31,8 @@ body.addEventListener("mousedown",
 body.addEventListener("touchstart",
   evt => {
     evt.target.lastClientX = evt.changedTouches[0].clientX;
-    evt.target.lastClientY = evt.changedTouches[0].clientY
-    console.log(evt);
+    evt.target.lastClientY = evt.changedTouches[0].clientY;
+
     evt.target.addEventListener("touchmove", handleTouchDrag);
     evt.target.addEventListener("touchend",
       evt => {
@@ -106,7 +106,7 @@ function readModel(path, textures={}) {
 readModel(modelPath)
   .then(modelOnceRead => {
     if (!modelOnceRead) return;
-    // console.log(modelOnceRead);
+    console.log(modelOnceRead);
     modelOnceRead.elements.forEach(element => {
       let readModelCube = new Cube(element, modelOnceRead.textures);
     });
