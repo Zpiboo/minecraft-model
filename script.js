@@ -106,7 +106,7 @@ function readModel(path, textures={}) {
 readModel(modelPath)
   .then(modelOnceRead => {
     if (!modelOnceRead) return;
-    console.log(modelOnceRead);
+    // console.log(modelOnceRead);
     modelOnceRead.elements.forEach(element => {
       let readModelCube = new Cube(element, modelOnceRead.textures);
     });
